@@ -10,3 +10,5 @@ provider "aws" {
     role_arn = var.authentication.assume_role_arn
   }
 }
+
+#teste de trigger

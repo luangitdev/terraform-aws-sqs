@@ -22,3 +22,5 @@ response = sqs.send_message(
 )
 
 print(f"Mensagem enviada com sucesso! ID da Mensagem: {response['MessageId']}")
+
+# teste de trigger
