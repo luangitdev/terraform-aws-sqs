@@ -1,0 +1,25 @@
+# Imagem Base
+# imagem oficial do Python, na versão 'slim'.
+FROM python:3.10-slim-bullseye
+
+# Diretório de trabalho dentro do contêiner para manter tudo organizado.
+WORKDIR /app
+
+# Copia APENAS o arquivo de dependências primeiro.
+# Isso otimiza o cache do Docker. Se o requirements.txt não mudar,
+# o Docker não vai reinstalar as dependências a cada novo build da imagem. 
+COPY src/requirements.txt .
+
+# Instala as dependências do Python.
+# A flag --no-cache-dir ajuda a manter a imagem final um pouco menor.
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Agora sim, copia o restante do código da aplicação (produtor.py, consumidor.py)
+# para o diretório de trabalho /app.
+COPY src/consumidor.py .
+
+# Comando que será executado quando o contêiner iniciar.
+# Inicia o nosso script consumidor em um loop infinito.
+# A flag '-u' (unbuffered) é uma boa prática para que os 'prints' do Python
+# apareçam imediatamente nos logs do contêiner.
+CMD ["python", "-u", "consumidor.py"]

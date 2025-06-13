@@ -1,0 +1,59 @@
+# 1. Arquivos e Pastas do Python
+# ---------------------------------
+
+# Pasta de ambiente virtual
+venv/
+.venv/
+env/
+
+# Arquivos de cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos de distribuição e instalação do Python
+*.egg-info/
+dist/
+build/
+
+# Arquivo de variáveis de ambiente (pode conter segredos) 
+.env
+
+
+# 2. Arquivos e Pastas do Terraform
+# ---------------------------------
+
+# Pasta de dependências dos providers do Terraform
+.terraform/
+
+# Arquivos de estado NUNCA devem ser versionados se você não usa um backend remoto.
+# Eles podem conter informações sensíveis em texto puro.
+*.tfstate
+*.tfstate.backup
+
+# Arquivos de crash log
+crash.log
+*.hcl.lock
+
+# Arquivos de variáveis locais. Crie um .tfvars.example no lugar.
+# Isso evita que segredos sejam enviados para o repositório.
+*.tfvars
+*.tfvars.json
+
+
+# 3. Arquivos de Sistema Operacional e IDEs
+# ---------------------------------
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Logs genéricos 
+*.log
+
+# Pastas de configuração de editores de código
+.vscode/
+.idea/

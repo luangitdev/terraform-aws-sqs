@@ -1,0 +1,50 @@
+name: Deploy-Infra-AWS
+
+# Aciona a pipeline em pushes para a branch 'main' que alterem a pasta 'infra'.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/**'
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Faz o checkout do código do repositório
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Configura as credenciais da AWS de forma segura
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2 # Ou a sua região
+
+      # 3. Instala a versão especificada do Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0 # Use uma versão recente
+
+      # 4. Inicializa o Terraform (prepara o backend, baixa providers)
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./infra # Executa o comando na pasta 'infra'
+
+      # 5. Gera o plano de execução do Terraform
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./infra
+
+      # 6. Aplica as mudanças do Terraform automaticamente
+      # CUIDADO: O -auto-approve aplica sem confirmação manual.
+      # Ideal para automação na branch principal.
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./infra

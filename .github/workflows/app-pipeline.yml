@@ -1,0 +1,53 @@
+name: Build-And-Push-App
+
+# Aciona a pipeline em pushes para 'main' que alterem a pasta 'src' ou o Dockerfile.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'Dockerfile.consumer'
+
+env:
+  ECR_REPOSITORY: sqs-consumer-app # Nome do seu repositório ECR
+  IMAGE_TAG: ${{ github.sha }}    # Usa o hash do commit como tag da imagem
+
+jobs:
+  build-and-push:
+    name: 'Build, Scan and Push App'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2 # Região do seu ECR
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Passo de segurança (DevSecOps): Escaneia o código por vulnerabilidades
+      # antes de construir a imagem.
+      - name: Run Trivy vulnerability scanner on filesystem
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './src'
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1' # Falha a pipeline se encontrar vulnerabilidades
+
+      # Constrói, tagueia e envia a imagem para o Amazon ECR
+      - name: Build, tag, and push image to Amazon ECR
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Contexto do build é a raiz do projeto
+          file: ./Dockerfile.consumer # Especifica qual Dockerfile usar
+          push: true
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.sa-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
