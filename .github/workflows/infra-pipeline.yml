@@ -43,7 +43,7 @@ jobs:
         working-directory: ./infra
 
       # 6. Aplica as mudanças do Terraform automaticamente
-      # CUIDADO: O -auto-approve aplica sem confirmação manual.
+      # O -auto-approve aplica sem confirmação manual.
       # Ideal para automação na branch principal.
       - name: Terraform Apply
         run: terraform apply -auto-approve
