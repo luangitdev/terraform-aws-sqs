@@ -2,11 +2,24 @@ name: Deploy-Infra-AWS
 
 # Aciona a pipeline em pushes para a branch 'main' que alterem a pasta 'infra'.
 on:
+  # Gatilho 1: Push na pasta infra/ (para criar/atualizar)
   push:
     branches:
       - main
     paths:
       - 'infra/**'
+
+  # Gatilho 2: Manual (para criar ou destruir sob demanda)
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Ação a ser executada (apply ou destroy)'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 
 jobs:
   terraform:
@@ -42,9 +55,16 @@ jobs:
         run: terraform plan
         working-directory: ./infra
 
-      # 6. Aplica as mudanças do Terraform automaticamente
+      # 6. Aplica as mudanças do Terraform automaticamente ou manualmente
       # O -auto-approve aplica sem confirmação manual.
-      # Ideal para automação na branch principal.
+      # Passo de Apply Condicional
       - name: Terraform Apply
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply')
         run: terraform apply -auto-approve
+        working-directory: ./infra
+
+      # Destroy Condicional
+      - name: Terraform Destroy
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+        run: terraform destroy -auto-approve
         working-directory: ./infra
