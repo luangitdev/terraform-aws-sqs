@@ -3,7 +3,7 @@ import json
 import time
 import os
 
-# Usa variável de ambiente em vez de hardcode
+# Usa variável de ambiente em vez de hardcode.
 sqs = boto3.client('sqs', region_name=os.getenv('AWS_DEFAULT_REGION', 'us-west-2'))
 queue_url = os.getenv('SQS_QUEUE_URL')
 
