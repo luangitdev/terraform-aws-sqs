@@ -37,3 +37,23 @@ variable "queue" {
     receive_wait_time_seconds = 10
   }
 }
+
+variable "ecs_cluster" {
+  type = object({
+    name = string
+  })
+
+  default = {
+    name = "cluster-projeto-sqs"
+  }
+}
+
+variable "ecs_task_execution_role_name" {
+  type    = string
+  default = "projeto-sqs-task-execution-role"
+}
+
+variable "ecs_task_role_name" {
+  type    = string
+  default = "projeto-sqs-task-role"
+}
