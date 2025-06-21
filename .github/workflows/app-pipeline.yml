@@ -42,7 +42,7 @@ jobs:
           format: 'table'
           severity: 'HIGH,CRITICAL'
           exit-code: '1' # Falha a pipeline se encontrar vulnerabilidades
-
+      
       # Constrói, tagueia e envia a imagem para o Amazon ECR
       - name: Build, tag, and push image to Amazon ECR
         uses: docker/build-push-action@v5
@@ -51,3 +51,11 @@ jobs:
           file: ./Dockerfile.consumer # Especifica qual Dockerfile usar
           push: true
           tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+      
+      # Deploy no ECS
+      - name: Update ECS Service
+        run: |
+          aws ecs update-service \
+            --cluster projeto-sqs-cluster \
+            --service projeto-sqs-consumer-service \
+            --force-new-deployment
