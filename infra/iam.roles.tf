@@ -62,3 +62,21 @@ resource "aws_iam_role_policy" "sqs_access" {
     ]
   })
 }
+
+resource "aws_iam_user_policy" "ecs_update_service" {
+  name = "ecs-update-service"
+  user = aws_iam_user.sqs_project_user.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:UpdateService"
+        ]
+        Resource = "arn:aws:ecs:us-west-2:***:service/cluster-projeto-sqs/projeto-sqs-consumer-service"
+      }
+    ]
+  })
+}
