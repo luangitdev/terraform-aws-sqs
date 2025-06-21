@@ -75,7 +75,7 @@ resource "aws_iam_user_policy" "ecs_update_service" {
         Action = [
           "ecs:UpdateService"
         ]
-        Resource = "arn:aws:ecs:us-west-2:123456789012:service/cluster-projeto-sqs/projeto-sqs-consumer-service"
+        Resource = "arn:aws:ecs:us-west-2:135350631478:service/cluster-projeto-sqs/projeto-sqs-consumer-service"
       }
     ]
   })
