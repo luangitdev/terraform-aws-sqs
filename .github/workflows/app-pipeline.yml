@@ -56,6 +56,6 @@ jobs:
       - name: Update ECS Service
         run: |
           aws ecs update-service \
-            --cluster projeto-sqs-cluster \
+            --cluster cluster-projeto-sqs \
             --service projeto-sqs-consumer-service \
             --force-new-deployment
