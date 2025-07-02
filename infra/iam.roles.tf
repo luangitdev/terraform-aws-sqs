@@ -63,20 +63,41 @@ resource "aws_iam_role_policy" "sqs_access" {
   })
 }
 
-resource "aws_iam_user_policy" "ecs_update_service" {
-  name = "ecs-update-service"
-  user = aws_iam_user.sqs_project_user.name
+# resource "aws_iam_user_policy" "ecs_update_service" {
+#   name = "ecs-update-service"
+#   user = aws_iam_user.sqs_project_user.name
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecs:UpdateService"
-        ]
-        Resource = "arn:aws:ecs:us-west-2:135350631478:service/cluster-projeto-sqs/projeto-sqs-consumer-service"
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "ecs:UpdateService"
+#         ]
+#         Resource = "arn:aws:ecs:us-west-2:135350631478:service/cluster-projeto-sqs/projeto-sqs-consumer-service"
+#       }
+#     ]
+#   })
+# }
+
+# resource "aws_iam_user_policy" "backend_s3_access" {
+#   name = "terraform-s3-backend"
+#   user = aws_iam_user.sqs_project_user.name
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect   = "Allow"
+#         Action   = ["s3:ListBucket"]
+#         Resource = "arn:aws:s3:::projeto-sqs-remote-backend"
+#       },
+#       {
+#         Effect   = "Allow"
+#         Action   = ["s3:GetObject", "s3:PutObject"]
+#         Resource = "arn:aws:s3:::projeto-sqs-remote-backend/*"
+#       }
+#     ]
+#   })
+# }
